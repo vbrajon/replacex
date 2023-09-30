@@ -1,0 +1,31 @@
+{
+  "name": "replacex",
+  "displayName": "ReplaceX",
+  "description": "Replace selection with a JS expression like `x + 1` or `eval(x)`",
+  "version": "0.0.1",
+  "publisher": "vbrajon",
+  "repository": "https://github.com/vbrajon/replacex",
+  "main": "extension.js",
+  "icon": "logo.png",
+  "engines": {
+    "vscode": "^1.82.0"
+  },
+  "activationEvents": [],
+  "contributes": {
+    "commands": [
+      {
+        "command": "replacex.prompt",
+        "title": "Type your JS expression (ex: x + 1, eval(x))",
+        "category": "ReplaceX"
+      }
+    ],
+    "keybindings": [
+      {
+        "key": "ctrl+e",
+        "mac": "cmd+e",
+        "command": "replacex.prompt",
+        "when": "editorTextFocus"
+      }
+    ]
+  }
+}
