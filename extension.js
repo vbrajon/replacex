@@ -1,16 +1,25 @@
-async function run() {
-  const prompt = await vscode.window.showInputBox({ prompt: "Evaluate" })
-  if (!prompt) return
+async function exec() {
+  const prompt = await vscode.window.showInputBox({ prompt: "Input JS expr to execute" })
+  if (prompt === undefined) return
+  if (prompt === "") return
   const editor = vscode.window.activeTextEditor
   if (!editor) return
-  editor.edit((editBuilder) => {
+  editor.edit(async (editBuilder) => {
     // prettier-ignore
-    editor.selections.forEach((selection, i) => {
-      const s = editor.document.getText(selection)
-      let e, x = s
+    editor.selections.forEach(async (selection, i) => {
+      let j = i + 1
+      let s, e, x
+      s = e = x = editor.document.getText(selection)
+      if (s && prompt === "state")
+        try { eval(s);vscode.workspace.getConfiguration().update("replacex.state", s, true);return vscode.window.showInformationMessage("State saved") }
+        catch (e) { return vscode.window.showErrorMessage(e.message) }
+      const state = vscode.workspace.getConfiguration().get("replacex.state", "")
+      vscode.window.showInformationMessage(`State: ${state}`)
+      eval(state)
       try { e = eval(`(${x})`) } catch (e) {}
       try { x = JSON.parse(x) } catch (e) {}
       try { x = eval(prompt) } catch(e) {}
+      try { if (x instanceof Function) x = x() } catch(e) {}
       if (typeof x !== "string") x = JSON.stringify(x, null, 2)
       editBuilder.replace(selection, x)
     })
@@ -19,21 +28,7 @@ async function run() {
 
 const vscode = require("vscode")
 function activate(context) {
-  const disposable = vscode.commands.registerCommand("replacex.prompt", run)
-  context.subscriptions.push(disposable)
+  context.subscriptions.push(vscode.commands.registerCommand("replacex.exec", exec))
 }
 function deactivate() {}
 module.exports = { activate, deactivate }
-
-/*
-identity = s
-eval = e
-json = x
-regex = s.replace(/[()]/g, '')
-toggle = !x
-increment = x+1
-duplicate = s+s
-condition = x > 10 ? 'yes' : 'no'
-obj_modify = (x.y = 1, x) or 
-arr_filter = x.filter(v => v)
-*/

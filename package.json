@@ -1,12 +1,12 @@
 {
   "name": "replacex",
   "displayName": "ReplaceX",
-  "description": "Replace selection with a JS expression like `x + 1` or `eval(x)`",
-  "version": "0.0.1",
+  "description": "Replace selection with a JS expression like `x+1` or `e`",
+  "version": "1.0.0",
   "publisher": "vbrajon",
   "repository": "https://github.com/vbrajon/replacex",
   "main": "extension.js",
-  "icon": "logo.png",
+  "icon": "icon.png",
   "engines": {
     "vscode": "^1.82.0"
   },
@@ -14,8 +14,8 @@
   "contributes": {
     "commands": [
       {
-        "command": "replacex.prompt",
-        "title": "Type your JS expression (ex: x + 1, eval(x))",
+        "command": "replacex.exec",
+        "title": "Execute JS expr on selection",
         "category": "ReplaceX"
       }
     ],
@@ -23,9 +23,22 @@
       {
         "key": "ctrl+e",
         "mac": "cmd+e",
-        "command": "replacex.prompt",
+        "command": "replacex.exec",
         "when": "editorTextFocus"
       }
-    ]
+    ],
+    "configuration": {
+      "title": "ReplaceX",
+      "properties": {
+        "replacex.state": {
+          "type": "string",
+          "default": "",
+          "description": "A \"file-like\" config variable to store alias functions and global state."
+        }
+      }
+    }
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.82.0"
   }
 }
